@@ -63,7 +63,7 @@ log "Instalando PM2..."
 sudo npm install -g pm2
 
 # Criar diretório do projeto
-PROJECT_DIR="/home/$(whoami)/reembolso-facil"
+PROJECT_DIR="/home/$(whoami)/reembolsofacil"
 log "Criando diretório do projeto: $PROJECT_DIR"
 
 if [ -d "$PROJECT_DIR" ]; then
@@ -145,7 +145,7 @@ log "Configurando PM2..."
 cat > ecosystem.config.js << EOF
 module.exports = {
   apps: [{
-    name: 'reembolso-facil',
+    name: 'reembolsofacil',
     script: 'server.js',
     instances: 1,
     autorestart: true,
@@ -160,7 +160,7 @@ module.exports = {
 EOF
 
 # Parar processo existente se houver
-pm2 delete reembolso-facil 2>/dev/null || true
+pm2 delete reembolsofacil 2>/dev/null || true
 
 # Iniciar aplicação
 log "Iniciando aplicação..."
@@ -195,7 +195,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo apt install -y nginx
     
     # Criar configuração do Nginx
-    sudo tee /etc/nginx/sites-available/reembolso-facil > /dev/null << EOF
+    sudo tee /etc/nginx/sites-available/reembolsofacil > /dev/null << EOF
 server {
     listen 80;
     server_name 38.102.86.102;
@@ -234,7 +234,7 @@ server {
 EOF
 
     # Ativar site
-    sudo ln -sf /etc/nginx/sites-available/reembolso-facil /etc/nginx/sites-enabled/
+    sudo ln -sf /etc/nginx/sites-available/reembolsofacil /etc/nginx/sites-enabled/
     sudo rm -f /etc/nginx/sites-enabled/default
     
     # Testar configuração
@@ -275,16 +275,16 @@ echo "  • Frontend: http://38.102.86.102:3000"
 echo "  • API Health: http://38.102.86.102:3001/api/health"
 echo
 echo "🔧 Comandos úteis:"
-echo "  • Ver logs: pm2 logs reembolso-facil"
-echo "  • Reiniciar: pm2 restart reembolso-facil"
+echo "  • Ver logs: pm2 logs reembolsofacil"
+echo "  • Reiniciar: pm2 restart reembolsofacil"
 echo "  • Status: pm2 status"
-echo "  • Parar: pm2 stop reembolso-facil"
+echo "  • Parar: pm2 stop reembolsofacil"
 echo
 echo "⚠️  Próximos passos:"
 echo "  1. Configure o banco de dados Supabase executando o script database/schema.sql"
 echo "  2. Edite o arquivo .env com suas configurações"
 echo "  3. Configure o Amazon SES para envio de emails"
-echo "  4. Reinicie a aplicação: pm2 restart reembolso-facil"
+echo "  4. Reinicie a aplicação: pm2 restart reembolsofacil"
 echo
 echo "📖 Documentação completa no README.md"
 echo
@@ -293,5 +293,5 @@ echo
 read -p "Deseja ver os logs em tempo real? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    pm2 logs reembolso-facil
+    pm2 logs reembolsofacil
 fi
