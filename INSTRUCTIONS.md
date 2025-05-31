@@ -96,48 +96,13 @@ SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public';
 ## 📧 Configuração de Email
 
 ### Amazon SES já configurado:
-- **Access Key**: `AKIAVPEYWSMGDRQLB3VS`
-- **Secret Key**: `BDTttwplzJpNsJwmZBxlnKLgcuZmNKGFigUy1YTSjfwq`
+- **Access Key**: ``
+- **Secret Key**: ``
 - **Região**: `sa-east-1`
-- **Remetente**: `novidades@linkti.info`
+- **Remetente**: `@.info`
 
 ## ⚙️ Configuração de Ambiente
 
-### Backend (.env)
-```env
-# Supabase
-SUPABASE_URL=https://vflfrwgtswzcpldwqnqs.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-
-# JWT
-JWT_SECRET=Y9WKeYLqtaFKBZcSvmq5JiLctC4MGRuiRtVt3etIKuNgHpWer7t6SmkpCtFH+Mu96gZYLZS1sCGBWK44qMfFRg==
-
-# Amazon SES
-AWS_ACCESS_KEY_ID=AKIAVPEYWSMGDRQLB3VS
-AWS_SECRET_ACCESS_KEY=BDTttwplzJpNsJwmZBxlnKLgcuZmNKGFigUy1YTSjfwq
-AWS_REGION=sa-east-1
-EMAIL_FROM=novidades@linkti.info
-
-# Servidor
-PORT=3001
-NODE_ENV=production
-SERVER_HOST=0.0.0.0
-FRONTEND_URL=http://38.102.86.102:3000
-
-# Tracking
-META_PIXEL_ID=581961359233767
-GOOGLE_ADS_TAG=AW-10888031582
-```
-
-### Frontend (.env)
-```env
-REACT_APP_SUPABASE_URL=https://vflfrwgtswzcpldwqnqs.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-REACT_APP_API_URL=http://38.102.86.102:3001
-REACT_APP_META_PIXEL_ID=581961359233767
-REACT_APP_GOOGLE_ADS_TAG=AW-10888031582
-```
 
 ## 🔄 Deploy e Atualizações
 
