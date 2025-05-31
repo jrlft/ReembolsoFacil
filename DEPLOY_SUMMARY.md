@@ -121,16 +121,16 @@ chmod +x install.sh
 ## 📋 **Credenciais Configuradas:**
 
 ### **Supabase:**
-- URL: https://vflfrwgtswzcpldwqnqs.supabase.co
-- Anon Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-- Service Role: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+- URL: 
+- Anon Key: 
+- Service Role: 
 
 ### **Amazon SES:**
-- Access Key: AKIAVPEYWSMGDRQLB3VS
-- Secret Key: BDTttwplzJpNsJwmZBxlnKLgcuZmNKGFigUy1YTSjfwq
+- Access Key: 
+- Secret Key: 
 - Region: sa-east-1
 - Endpoint: email-smtp.sa-east-1.amazonaws.com:2587
-- Sender: novidades@linkti.info
+- Sender: 
 
 ## ✅ **Status Final:**
 - 🎯 **Todos os requisitos implementados**
