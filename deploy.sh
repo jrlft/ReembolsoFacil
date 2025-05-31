@@ -44,7 +44,7 @@ cp -r . "$BACKUP_DIR/" 2>/dev/null || warn "Falha ao fazer backup completo"
 
 # Parar aplicação
 log "Parando aplicação..."
-pm2 stop reembolso-facil || warn "Aplicação não estava rodando"
+pm2 stop reembolsofacil || warn "Aplicação não estava rodando"
 
 # Atualizar dependências do backend
 log "Atualizando dependências do backend..."
@@ -106,7 +106,7 @@ log "Aguardando inicialização..."
 sleep 5
 
 # Verificar se está rodando
-if pm2 list | grep -q "reembolso-facil.*online"; then
+if pm2 list | grep -q "reembolsofacil.*online"; then
     log "✅ Aplicação iniciada com sucesso"
 else
     error "❌ Falha ao iniciar aplicação"
@@ -139,7 +139,7 @@ pm2 status
 
 # Mostrar logs recentes
 log "Logs recentes:"
-pm2 logs reembolso-facil --lines 10
+pm2 logs reembolsofacil --lines 10
 
 # Limpeza
 log "Limpando arquivos temporários..."
@@ -157,8 +157,8 @@ echo "  • Health Check: http://38.102.86.102:3001/api/health"
 echo "  • Backup criado em: $BACKUP_DIR"
 echo
 echo "🔧 Comandos úteis:"
-echo "  • Ver logs: pm2 logs reembolso-facil"
-echo "  • Reiniciar: pm2 restart reembolso-facil"
+echo "  • Ver logs: pm2 logs reembolsofacil"
+echo "  • Reiniciar: pm2 restart reembolsofacil"
 echo "  • Status: pm2 status"
 echo "  • Monitorar: pm2 monit"
 echo
