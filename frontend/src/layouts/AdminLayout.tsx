@@ -6,7 +6,7 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout, user } = useAuth(); // user pode ser usado para verificações de role adicionais se necessário
+  const { signOut, user } = useAuth(); // user pode ser usado para verificações de role adicionais se necessário
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -20,8 +20,8 @@ const AdminLayout: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
-      navigate('/login'); 
+      await signOut();
+      navigate('/login');
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }

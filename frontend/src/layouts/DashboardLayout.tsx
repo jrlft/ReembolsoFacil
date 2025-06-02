@@ -6,13 +6,13 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { logout, user } = useAuth();
+  const { signOut, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await signOut();
       navigate('/login'); // Redireciona para login após logout
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
