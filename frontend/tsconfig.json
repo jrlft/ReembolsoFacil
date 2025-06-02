@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es5", // Ou "es6"/"esnext" dependendo da compatibilidade de navegador desejada
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true, // Create React App lida com a emissão de arquivos
+    "jsx": "react-jsx",
+    "baseUrl": "src" // Permite imports a partir de 'src' como se fosse a raiz
+  },
+  "include": [
+    "src" // Especifica quais arquivos o TypeScript deve compilar
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
