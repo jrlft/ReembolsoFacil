@@ -93,11 +93,11 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist # 'dist/' já está coberto acima, mas pode ser específico para Nuxt aqui
 
 # Gatsby files
 .cache/
-public
+# public # Removida esta linha que causava o problema
 
 # Storybook build outputs
 .out
@@ -145,7 +145,7 @@ ecosystem.config.js
 
 # Test files
 test-results/
-coverage/
+# coverage/ # Já coberto acima
 
 # Build artifacts
 *.tar.gz
