@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5", // Ou "es6"/"esnext" dependendo da compatibilidade de navegador desejada
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -17,12 +17,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true, // Create React App lida com a emissão de arquivos
+    "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "src" // Permite imports a partir de 'src' como se fosse a raiz
+    "baseUrl": "src",
+    "types": ["node", "jest", "@testing-library/jest-dom"] // Adicionado "node" e outros tipos comuns
   },
   "include": [
-    "src" // Especifica quais arquivos o TypeScript deve compilar
+    "src"
   ],
   "exclude": [
     "node_modules"
