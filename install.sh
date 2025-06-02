@@ -63,35 +63,67 @@ log "Instalando PM2..."
 sudo npm install -g pm2
 
 # Definir diretório do projeto
-PROJECT_DIR_NAME="reembolsofacil" # Nome do diretório sem hífen
+PROJECT_DIR_NAME="reembolsofacil" # Nome do diretório esperado (minúsculas)
 EXPECTED_PROJECT_DIR="/home/$(whoami)/$PROJECT_DIR_NAME"
 CURRENT_DIR=$(pwd)
 PROJECT_DIR="" # Será definida abaixo
 
-# Lógica para diretório do projeto (baseada na sua versão melhorada)
-if [ "$(basename "$CURRENT_DIR")" == "$PROJECT_DIR_NAME" ] && [ -f "package.json" ]; then
+# Lógica para diretório do projeto
+# Converte o nome do diretório atual para minúsculas para comparação insensível a maiúsculas/minúsculas
+if [ "$(basename "$CURRENT_DIR" | tr '[:upper:]' '[:lower:]')" == "$PROJECT_DIR_NAME" ] && [ -f "package.json" ]; then
     log "Script executado de dentro do diretório do projeto: $CURRENT_DIR"
     PROJECT_DIR="$CURRENT_DIR"
-    cd "$PROJECT_DIR" # Garante que estamos no diretório correto
-elif [ -d "$EXPECTED_PROJECT_DIR" ]; then
-    warn "Diretório do projeto $EXPECTED_PROJECT_DIR já existe. Fazendo backup..."
-    BACKUP_DIR="${EXPECTED_PROJECT_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
-    sudo mv "$EXPECTED_PROJECT_DIR" "$BACKUP_DIR"
-    log "Backup criado em: $BACKUP_DIR"
-    mkdir -p "$EXPECTED_PROJECT_DIR"
-    log "Criado novo diretório do projeto: $EXPECTED_PROJECT_DIR"
-    cd "$EXPECTED_PROJECT_DIR"
-    error "Arquivos do projeto não encontrados no diretório de execução. Clone ou mova os arquivos para $EXPECTED_PROJECT_DIR e execute novamente OU execute o script de dentro do diretório do projeto."
+    # Não é necessário cd, pois já estamos no diretório correto e PROJECT_DIR aponta para ele.
+elif [ -d "$EXPECTED_PROJECT_DIR" ]; then # Verifica se o diretório com nome em minúsculas já existe
+    warn "Diretório do projeto $EXPECTED_PROJECT_DIR (nome esperado em minúsculas) já existe."
+    # Verifica se o diretório atual (com possível variação de maiúsculas/minúsculas) contém os arquivos
+    if [ -f "$CURRENT_DIR/package.json" ] && [ "$CURRENT_DIR" != "$EXPECTED_PROJECT_DIR" ]; then
+        log "Os arquivos do projeto parecem estar em $CURRENT_DIR, mas o nome esperado do diretório é $PROJECT_DIR_NAME."
+        warn "Renomeando $CURRENT_DIR para $EXPECTED_PROJECT_DIR para consistência..."
+        # Sair do diretório atual para permitir a renomeação
+        cd .. 
+        sudo mv "$CURRENT_DIR" "$EXPECTED_PROJECT_DIR"
+        cd "$EXPECTED_PROJECT_DIR"
+        PROJECT_DIR=$(pwd)
+        log "Diretório do projeto agora é $PROJECT_DIR."
+    else
+        # Se o diretório esperado (minúsculo) existe, mas não estamos nele, ou não tem package.json
+        log "Fazendo backup do diretório existente $EXPECTED_PROJECT_DIR..."
+        BACKUP_DIR="${EXPECTED_PROJECT_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
+        sudo mv "$EXPECTED_PROJECT_DIR" "$BACKUP_DIR"
+        log "Backup criado em: $BACKUP_DIR"
+        mkdir -p "$EXPECTED_PROJECT_DIR"
+        log "Criado novo diretório do projeto: $EXPECTED_PROJECT_DIR"
+        cd "$EXPECTED_PROJECT_DIR"
+        PROJECT_DIR=$(pwd)
+        error "Arquivos do projeto não encontrados. Clone ou mova os arquivos para $PROJECT_DIR e execute novamente OU execute o script de dentro do diretório do projeto."
+    fi
+elif [ -d "$CURRENT_DIR" ] && [ "$(basename "$CURRENT_DIR" | tr '[:upper:]' '[:lower:]')" != "$PROJECT_DIR_NAME" ] && [ -f "$CURRENT_DIR/package.json" ]; then
+    # Estamos em um diretório com os arquivos, mas o nome não é o esperado (ex: ReembolsoFacil)
+    log "Arquivos do projeto encontrados em $CURRENT_DIR. Renomeando para $PROJECT_DIR_NAME para consistência..."
+    TARGET_PARENT_DIR=$(dirname "$CURRENT_DIR")
+    NEW_PROJECT_PATH="$TARGET_PARENT_DIR/$PROJECT_DIR_NAME"
+    # Sair do diretório atual para permitir a renomeação
+    cd ..
+    sudo mv "$CURRENT_DIR" "$NEW_PROJECT_PATH" # Renomeia para o nome em minúsculas
+    cd "$NEW_PROJECT_PATH"
+    PROJECT_DIR=$(pwd)
+    log "Diretório do projeto agora é $PROJECT_DIR."
 else
+    # Se nem o diretório atual nem o esperado (minúsculo) existem com os arquivos
     log "Criando diretório do projeto: $EXPECTED_PROJECT_DIR"
     mkdir -p "$EXPECTED_PROJECT_DIR"
     cd "$EXPECTED_PROJECT_DIR"
-    error "Arquivos do projeto não encontrados no diretório de execução. Clone ou mova os arquivos para $EXPECTED_PROJECT_DIR e execute novamente OU execute o script de dentro do diretório do projeto."
+    PROJECT_DIR=$(pwd)
+    error "Arquivos do projeto não encontrados. Clone ou mova os arquivos para $PROJECT_DIR e execute novamente OU execute o script de dentro do diretório do projeto."
 fi
 
-if [ ! -f "package.json" ]; then
-    error "Arquivo package.json não encontrado no diretório do projeto $PROJECT_DIR. Certifique-se de que os arquivos do projeto estão aqui."
+# Verificação final se estamos no diretório correto com os arquivos
+if [ ! -f "$PROJECT_DIR/package.json" ]; then
+    error "Arquivo package.json não encontrado no diretório do projeto $PROJECT_DIR. Verifique a estrutura de pastas e os arquivos."
 fi
+# Garante que estamos operando dentro do PROJECT_DIR correto
+cd "$PROJECT_DIR"
 
 log "Diretório do projeto configurado: $PROJECT_DIR"
 
@@ -185,10 +217,7 @@ log "Iniciando aplicação com PM2..."
 pm2 start ecosystem.config.js
 
 log "Configurando PM2 para iniciar automaticamente..."
-# Gera o comando de startup e instrui o usuário a executá-lo
-# Isso é mais seguro do que tentar executar diretamente com sudo via script
 STARTUP_COMMAND_OUTPUT=$(pm2 startup systemd -u $(whoami) --hp /home/$(whoami))
-# Extrai o comando sudo do output
 SUDO_COMMAND=$(echo "$STARTUP_COMMAND_OUTPUT" | grep "sudo")
 
 if [ -n "$SUDO_COMMAND" ]; then
@@ -202,23 +231,20 @@ pm2 save
 log "Verificando status da aplicação PM2..."
 pm2 status
 
-# Variável para rastrear se Nginx foi configurado
 NGINX_CONFIGURED=false
 
-# Configurar firewall (opcional)
 read -p "Deseja configurar o firewall UFW? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     log "Configurando firewall..."
     sudo ufw allow ssh
-    sudo ufw allow 80/tcp  # Porta HTTP para Nginx
-    sudo ufw allow 443/tcp # Porta HTTPS (se for configurar SSL depois)
-    sudo ufw allow 3001/tcp # Permitir acesso direto ao backend se necessário para testes
+    sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
+    sudo ufw allow 3001/tcp
     sudo ufw --force enable
     log "Firewall configurado"
 fi
 
-# Instalar e configurar Nginx (opcional)
 read -p "Deseja instalar e configurar Nginx como proxy reverso? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -226,25 +252,23 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     log "Instalando Nginx..."
     sudo apt install -y nginx
     
-    NGINX_SITE_NAME="reembolsofacil" # Sem hífen
+    NGINX_SITE_NAME="reembolsofacil"
     NGINX_CONFIG_FILE="/etc/nginx/sites-available/$NGINX_SITE_NAME"
 
     log "Criando configuração do Nginx em $NGINX_CONFIG_FILE..."
     sudo tee $NGINX_CONFIG_FILE > /dev/null << EOF
 server {
     listen 80;
-    server_name 38.102.86.102; # Seu IP ou domínio
+    server_name 38.102.86.102;
 
-    # Frontend - Servir arquivos estáticos do build de produção
     location / {
         root $PROJECT_DIR/frontend/build;
         index index.html index.htm;
-        try_files \$uri \$uri/ /index.html; # Essencial para roteamento do React
+        try_files \$uri \$uri/ /index.html;
     }
 
-    # API Backend
     location /api {
-        proxy_pass http://localhost:3001; # Backend rodando na porta 3001
+        proxy_pass http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -255,10 +279,6 @@ server {
         proxy_cache_bypass \$http_upgrade;
     }
 
-    # Uploads (servidos pelo backend Node.js, acessados via /api/uploads ou /uploads dependendo da rota do backend)
-    # Se suas rotas de upload no backend são, por exemplo, /api/uploads/arquivo.pdf
-    # então o Nginx já as cobrirá com o location /api.
-    # Se for /uploads/arquivo.pdf diretamente do backend, adicione um location específico:
     location /uploads {
         proxy_pass http://localhost:3001/uploads; 
         proxy_http_version 1.1;
@@ -274,7 +294,6 @@ EOF
     fi
     sudo ln -s $NGINX_CONFIG_FILE /etc/nginx/sites-enabled/
     
-    # Remover link simbólico default se existir e não for o nosso
     if [ -L /etc/nginx/sites-enabled/default ] && [ "$(readlink -f /etc/nginx/sites-enabled/default)" != "$NGINX_CONFIG_FILE" ]; then
         sudo rm -f /etc/nginx/sites-enabled/default
     fi
@@ -290,18 +309,16 @@ EOF
 fi
 
 log "Verificando serviços..."
-sleep 5 # Dar tempo para os serviços iniciarem
+sleep 5
 
-# Verificar backend
 if curl -s -I http://localhost:3001/api/health | grep -q "HTTP/1.1 200 OK"; then
     log "✅ Backend (direto) está rodando na porta 3001 e /api/health responde com 200 OK"
 else
     warn "❌ Backend (direto) não está respondendo corretamente na porta 3001 ou /api/health não está OK. Verifique os logs: pm2 logs $PM2_APP_NAME"
 fi
 
-# Verificar frontend/Nginx
 if [ "$NGINX_CONFIGURED" = true ]; then
-    if curl -s -I http://38.102.86.102/ | grep -q "HTTP/1.1"; then # Testa a raiz via IP externo na porta 80
+    if curl -s -I http://38.102.86.102/ | grep -q "HTTP/1.1"; then
         log "✅ Frontend (via Nginx) está acessível em http://38.102.86.102/"
         if curl -s -I http://38.102.86.102/api/health | grep -q "HTTP/1.1 200 OK"; then
              log "✅ API (via Nginx) está acessível em http://38.102.86.102/api/health e responde com 200 OK"
@@ -326,7 +343,7 @@ if [ "$NGINX_CONFIGURED" = true ]; then
     echo "  • API Backend (via Nginx): http://38.102.86.102/api"
     echo "  • API Health (via Nginx): http://38.102.86.102/api/health"
 else
-    echo "  • Backend (direto): http://SEU_IP_EXTERNO:3001" # Substitua SEU_IP_EXTERNO pelo IP real
+    echo "  • Backend (direto): http://SEU_IP_EXTERNO:3001" 
     echo "  • API Health (direto): http://SEU_IP_EXTERNO:3001/api/health"
     echo "  • Frontend: Não iniciado automaticamente. Sirva os arquivos de '$PROJECT_DIR/frontend/build'."
 fi
