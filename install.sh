@@ -134,7 +134,7 @@ if [ ! -f "frontend/.env" ]; then
         cat > frontend/.env << EOF
 REACT_APP_SUPABASE_URL=https://vflfrwgtswzcpldwqnqs.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmbGZyd2d0c3d6Y3BsZHdxbnFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4Njk4NjAsImV4cCI6MjA2MzQ0NTg2MH0.nRNEXIRzJQli2pmDf3aREaXmDcPw69WrembVmPwgdQ4
-REACT_APP_API_URL=http://38.102.86.102:3001/api # Ajustado para incluir /api se Nginx for usado
+REACT_APP_API_URL=http://38.102.86.102/api # Ajustado para incluir /api se Nginx for usado
 REACT_APP_META_PIXEL_ID=581961359233767
 REACT_APP_GOOGLE_ADS_TAG=AW-10888031582
 EOF
