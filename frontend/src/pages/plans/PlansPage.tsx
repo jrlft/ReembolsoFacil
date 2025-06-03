@@ -35,6 +35,7 @@ const PlansPage: React.FC = () => {
     try {
       setLoading(true);
       // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
+      console.log('AuthContext session em PlansPage (fetchPlanos):', session); // Log para depurar a sessão
       const response = await fetch('/api/plans', {
         headers: {
           'Authorization': `Bearer ${session?.access_token}` // Usar token da sessão do AuthContext
@@ -66,6 +67,7 @@ const PlansPage: React.FC = () => {
     try {
       // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
       // console.log('Token do localStorage para criar/editar plano:', token); // Remover log
+      console.log('AuthContext session em PlansPage (handleSubmit):', session); // Log para depurar a sessão
       const url = editingPlano ? `/api/plans/${editingPlano.id}` : '/api/plans';
       const method = editingPlano ? 'PUT' : 'POST';
 
@@ -119,6 +121,7 @@ const PlansPage: React.FC = () => {
 
     try {
       // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
+      console.log('AuthContext session em PlansPage (handleDelete):', session); // Log para depurar a sessão
       const response = await fetch(`/api/plans/${id}`, {
         method: 'DELETE',
         headers: {
