@@ -110,7 +110,7 @@ const PlansPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este plano?')) {
+    if (!window.confirm('Tem certeza que deseja excluir este plano?')) {
       return;
     }
 

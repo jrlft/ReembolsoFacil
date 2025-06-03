@@ -126,7 +126,7 @@ const DependentsPage: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este dependente?')) {
+    if (!window.confirm('Tem certeza que deseja excluir este dependente?')) {
       return;
     }
 
