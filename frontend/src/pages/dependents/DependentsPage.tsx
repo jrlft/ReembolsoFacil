@@ -40,13 +40,14 @@ const DependentsPage: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
+      let planosData: { plans?: Plano[] } = {}; // Definir planosData aqui
       
       // Fetch Planos
       const planosResponse = await fetch('/api/plans', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (planosResponse.ok) {
-        const planosData = await planosResponse.json();
+        planosData = await planosResponse.json(); // Atribuir valor aqui
         setPlanos(planosData.plans || []);
       } else {
         toast.error('Erro ao carregar planos');
