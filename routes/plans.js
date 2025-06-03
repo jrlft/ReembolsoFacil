@@ -60,8 +60,8 @@ router.post('/', authenticateToken, async (req, res) => {
           usuario_id: req.user.id,
           nome,
           icone_url,
-          email_reembolso, // Corrigido para corresponder ao frontend e schema
-          telefone_reembolso, // Corrigido para corresponder ao frontend e schema
+          email_seguradora: email_reembolso, // Corrigido para corresponder ao schema do BD
+          telefone_seguradora: telefone_reembolso, // Corrigido para corresponder ao schema do BD
           observacoes,
           created_at: new Date().toISOString()
         }
@@ -94,8 +94,8 @@ router.put('/:id', authenticateToken, async (req, res) => {
       .update({
         nome,
         icone_url,
-        email_reembolso, // Corrigido para corresponder ao frontend e schema
-        telefone_reembolso, // Corrigido para corresponder ao frontend e schema
+        email_seguradora: email_reembolso, // Corrigido para corresponder ao schema do BD
+        telefone_seguradora: telefone_reembolso, // Corrigido para corresponder ao schema do BD
         observacoes,
         updated_at: new Date().toISOString()
       })
