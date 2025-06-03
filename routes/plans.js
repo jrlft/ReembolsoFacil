@@ -47,7 +47,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // Criar novo plano
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { nome, icone_url, email_seguradora, telefone_seguradora, observacoes } = req.body;
+    const { nome, icone_url, email_reembolso, telefone_reembolso, observacoes } = req.body;
 
     if (!nome) {
       return res.status(400).json({ error: 'Nome do plano é obrigatório' });
@@ -60,8 +60,8 @@ router.post('/', authenticateToken, async (req, res) => {
           usuario_id: req.user.id,
           nome,
           icone_url,
-          email_seguradora,
-          telefone_seguradora,
+          email_reembolso, // Corrigido para corresponder ao frontend e schema
+          telefone_reembolso, // Corrigido para corresponder ao frontend e schema
           observacoes,
           created_at: new Date().toISOString()
         }
@@ -83,7 +83,7 @@ router.post('/', authenticateToken, async (req, res) => {
 // Atualizar plano
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
-    const { nome, icone_url, email_seguradora, telefone_seguradora, observacoes } = req.body;
+    const { nome, icone_url, email_reembolso, telefone_reembolso, observacoes } = req.body;
 
     if (!nome) {
       return res.status(400).json({ error: 'Nome do plano é obrigatório' });
@@ -94,8 +94,8 @@ router.put('/:id', authenticateToken, async (req, res) => {
       .update({
         nome,
         icone_url,
-        email_seguradora,
-        telefone_seguradora,
+        email_reembolso, // Corrigido para corresponder ao frontend e schema
+        telefone_reembolso, // Corrigido para corresponder ao frontend e schema
         observacoes,
         updated_at: new Date().toISOString()
       })

@@ -8,6 +8,11 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// Configurar 'trust proxy' para funcionar corretamente atrás do Nginx (ou outro proxy reverso)
+// Isso é importante para o express-rate-limit e para obter o IP real do cliente.
+// O valor '1' significa que confiamos no primeiro proxy na cadeia.
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3001;
 const HOST = process.env.SERVER_HOST || '0.0.0.0';
 
