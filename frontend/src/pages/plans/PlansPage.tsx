@@ -43,8 +43,8 @@ const PlansPage: React.FC = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setPlanos(data.plans || []);
+        const data = await response.json(); // data aqui é o array de planos diretamente
+        setPlanos(data || []); // Usar data diretamente
       } else {
         toast.error('Erro ao carregar planos');
       }
