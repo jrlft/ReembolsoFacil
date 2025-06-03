@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Building, Mail, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext'; // Importar useAuth
 
 interface Plano {
   id: string;
@@ -13,6 +14,7 @@ interface Plano {
 }
 
 const PlansPage: React.FC = () => {
+  const { session } = useAuth(); // Usar o hook useAuth
   const [planos, setPlanos] = useState<Plano[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -32,10 +34,10 @@ const PlansPage: React.FC = () => {
   const fetchPlanos = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
       const response = await fetch('/api/plans', {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${session?.access_token}` // Usar token da sessão do AuthContext
         }
       });
 
@@ -62,8 +64,8 @@ const PlansPage: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      console.log('Token do localStorage para criar/editar plano:', token); // Adicionando log para depuração
+      // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
+      // console.log('Token do localStorage para criar/editar plano:', token); // Remover log
       const url = editingPlano ? `/api/plans/${editingPlano.id}` : '/api/plans';
       const method = editingPlano ? 'PUT' : 'POST';
 
@@ -71,7 +73,7 @@ const PlansPage: React.FC = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${session?.access_token}` // Usar token da sessão do AuthContext
         },
         body: JSON.stringify(formData)
       });
@@ -116,11 +118,11 @@ const PlansPage: React.FC = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      // const token = localStorage.getItem('token'); // Remover uso direto do localStorage
       const response = await fetch(`/api/plans/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${session?.access_token}` // Usar token da sessão do AuthContext
         }
       });
 
