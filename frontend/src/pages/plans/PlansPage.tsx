@@ -63,6 +63,7 @@ const PlansPage: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
+      console.log('Token do localStorage para criar/editar plano:', token); // Adicionando log para depuração
       const url = editingPlano ? `/api/plans/${editingPlano.id}` : '/api/plans';
       const method = editingPlano ? 'PUT' : 'POST';
 
